@@ -62,4 +62,23 @@ final class ParserTest extends TestCase
         $this->assertEquals(0, $parsedArgs['p']);
         $this->assertEquals("", $parsedArgs['d']);
     }
+
+    public function testShouldReturnDefaultValueIfEmptyValueProvided()
+    {
+        // Act
+        $parsedArgs = $this->parser->parse("-p");
+        
+        // Assert
+        $this->assertEquals(0, $parsedArgs['p']);
+    }
+
+    public function testShouldIgnoreWhiteSpace()
+    {
+        // Act
+        $parsedArgs = $this->parser->parse("   -p      514     -d \t /dev/null   ");
+
+        // Assert
+        $this->assertEquals(514, $parsedArgs['p']);
+        $this->assertEquals("/dev/null", $parsedArgs['d']);
+    }
 }
