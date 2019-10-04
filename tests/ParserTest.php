@@ -91,4 +91,14 @@ final class ParserTest extends TestCase
         // Act
         $parsedArgs = $this->parser->parse("-p forty two");
     }
+
+    public function testShouldReturnErrorIfInvalidFlagProvided()
+    {
+        // Assert
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage("flag is not in scheme");
+
+        // Act
+        $parsedArgs = $this->parser->parse("-f foo");
+    }
 }

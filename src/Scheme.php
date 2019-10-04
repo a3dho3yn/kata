@@ -2,6 +2,8 @@
 
 namespace ArgsParser;
 
+use InvalidArgumentException;
+
 final class Scheme {
     
     /** @var array */
@@ -16,6 +18,10 @@ final class Scheme {
 
     public function getArgType(string $name)
     {
+        if (!isset($this->args[$name])) {
+            throw new InvalidArgumentException("flag is not in scheme");
+        }
+        
         return $this->args[$name]->getType();
     }
 
