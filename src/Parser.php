@@ -2,6 +2,8 @@
 
 namespace ArgsParser;
 
+use InvalidArgumentException;
+
 final class Parser {
     private $scheme;
 
@@ -21,7 +23,10 @@ final class Parser {
             $name = substr($a, 0, 1);
             $value = trim(substr($a, 1));
             $type = $this->scheme->getArgType($name);
-            $result[$name] = self::convertType($value, $type);
+
+            if (strlen($value) !== 0 or $type === 'boolean') {
+                $result[$name] = self::convertType($value, $type);
+            }
         }
 
         foreach ($this->scheme->getArgs() as $arg) {
@@ -46,7 +51,13 @@ final class Parser {
         }
 
         if ($type === 'number') {
-            return (int)$value;
+            $convertedValue = (int)$value;
+
+            if ("$convertedValue" != $value) {
+                throw new InvalidArgumentException("$value is not a number");
+            }
+
+            return $convertedValue;
         }
     }
 }

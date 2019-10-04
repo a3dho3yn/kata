@@ -81,4 +81,14 @@ final class ParserTest extends TestCase
         $this->assertEquals(514, $parsedArgs['p']);
         $this->assertEquals("/dev/null", $parsedArgs['d']);
     }
+
+    public function testShouldReturnErrorIfInvalidNumberProvided()
+    {
+        // Assert
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage("forty two is not a number");
+
+        // Act
+        $parsedArgs = $this->parser->parse("-p forty two");
+    }
 }
