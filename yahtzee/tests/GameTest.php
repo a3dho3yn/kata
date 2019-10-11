@@ -79,4 +79,19 @@ class GameTest extends TestCase {
         // Act
         $game->roll([1,2]);
     }
+
+    public function testShouldNotAllowRollingMoreThanThreeTimes()
+    {
+        // Assert
+        $this->expectException(Error::class);
+        
+        // Arrange
+        $game = new Game();
+        $game->roll();
+        $game->roll();
+        $game->roll();
+        
+        // Act
+        $game->roll();
+    }
 }
