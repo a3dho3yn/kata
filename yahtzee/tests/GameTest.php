@@ -56,11 +56,9 @@ class GameTest extends TestCase {
         $this->assertEquals($firstRun[4], $game->getDices()[4]);
     }
 
+    /** @expectedException Error */
     public function testShouldReturnErrorWhenTryingToGetDicesBeforeFirstRoll()
     {
-        // Assert
-        $this->expectException(Error::class);
-
         // Arrange
         $game = new Game();
 
@@ -68,11 +66,9 @@ class GameTest extends TestCase {
         $game->getDices();
     }
 
+    /** @expectedException Error */
     public function testShouldNotAllowChoosingDicesToRollAtFirstRun()
     {
-        // Assert
-        $this->expectException(Error::class);
-
         // Arrange
         $game = new Game();
 
@@ -80,11 +76,9 @@ class GameTest extends TestCase {
         $game->roll([1,2]);
     }
 
+    /** @expectedException Error */
     public function testShouldNotAllowRollingMoreThanThreeTimes()
     {
-        // Assert
-        $this->expectException(Error::class);
-        
         // Arrange
         $game = new Game();
         $game->roll();
@@ -93,5 +87,30 @@ class GameTest extends TestCase {
         
         // Act
         $game->roll();
+    }
+
+    /** @doesNotPerformAssertions */
+    public function testShouldAllowRollingAfterSubmittingScore()
+    {
+        // Arrange
+        $game = new Game();
+        $game->roll();
+        $game->roll();
+        $game->roll();
+        $game->submitScore('threes');
+
+        // Act
+        $game->roll();
+    }
+
+    /** @expectedException Error */
+    public function testSubmitScoreRequiresOneOfPredefinedConfigurations()
+    {
+        // Arrange
+        $game = new Game();
+        $game->roll();
+
+        // Act
+        $game->submitScore('foo');
     }
 }

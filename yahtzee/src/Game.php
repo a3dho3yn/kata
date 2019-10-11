@@ -37,4 +37,13 @@ final class Game {
 
         return $this->dices;
     }
+
+    public function submitScore(string $configuration)
+    {
+        if (!in_array($configuration, ['ones', 'twos', 'threes', 'fours', 'fives', 'sixes'])) {
+            throw new Error("invalid configuration");
+        }
+
+        $this->timesRolled = 0;
+    }
 }
