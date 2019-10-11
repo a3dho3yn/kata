@@ -99,4 +99,9 @@ final class Game {
         $this->dice = null;
         $this->timesRolled = 0;
     }
+
+    public function finish()
+    {
+        // TODO What to do?!
+    }
 }

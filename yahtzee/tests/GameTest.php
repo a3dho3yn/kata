@@ -166,4 +166,21 @@ class GameTest extends TestCase {
         // Act
         $game->submitScore('ones');
     }
+
+    public function testShouldCalculateTotalScoreWhenGameFinished()
+    {
+        // Arrange
+        $game = new Game();
+        $categories = ['ones', 'twos', 'threes', 'fours', 'fives', 'sixes'];
+        foreach ($categories as $c) {
+            $game->setDice([1,2,3,4,5]);
+            $game->submitScore($c);
+        }
+
+        // Act
+        $game->finish();
+
+        // Assert
+        $this->assertEquals(1+2+3+4+5+0, $game->getScore());
+    }
 }
