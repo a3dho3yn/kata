@@ -10,10 +10,10 @@ class GameTest extends TestCase {
         $game = new Game();
 
         // Act
-        $dices = $game->roll();
+        $dice = $game->roll();
 
         // Assert
-        $this->assertCount(5, $dices);
+        $this->assertCount(5, $dice);
     }
 
     public function testRollingDiceShouldAllowChoosingDicesToRoll()
@@ -23,10 +23,10 @@ class GameTest extends TestCase {
 
         // Act
         $game->roll();
-        $dices = $game->roll([1,3,4]);
+        $dice = $game->roll([1,3,4]);
 
         // Assert
-        $this->assertCount(3, $dices);
+        $this->assertCount(3, $dice);
     }
 
     public function testReturnsAllDices()
@@ -36,10 +36,10 @@ class GameTest extends TestCase {
 
         // Act
         $game->roll();
-        $dices = $game->getDices();
+        $dice = $game->getDices();
 
         // Assert
-        $this->assertCount(5, $dices);
+        $this->assertCount(5, $dice);
     }
 
     public function testShouldKeepStateOfNotRolledDices()
@@ -112,5 +112,33 @@ class GameTest extends TestCase {
 
         // Act
         $game->submitScore('foo');
+    }
+
+    /**
+     * @dataProvider submitScoreTestCaseProvider
+     */
+    public function testSubmitScoreShouldUpdateUsersScoreBasedOnConfigrationAndDices($category, $dice, $score)
+    {
+        // Arrange
+        $game = new Game();
+        $game->setDice($dice);
+
+        // Act
+        $game->submitScore($category);
+
+        // Assert
+        $this->assertEquals($score, $game->getScore());
+    }
+
+    public function submitScoreTestCaseProvider()
+    {
+        return [
+            ['ones',  [1,1,1,1,2], 4],
+            ['twos',  [2,3,4,2,2], 6],
+            ['threes',[3,1,3,1,3], 9],
+            ['fours', [2,3,4,5,6], 4],
+            ['fives', [1,1,1,1,1], 0],
+            ['sixes', [6,6,6,6,6], 30],
+        ];
     }
 }

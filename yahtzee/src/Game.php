@@ -5,8 +5,9 @@ namespace Yahtzee;
 use Error;
 
 final class Game {
-    private $dices;
+    private $dice;
     private $timesRolled = 0;
+    private $score = 0;
 
     public function roll(array $which = [0,1,2,3,4]): array
     {
@@ -14,7 +15,7 @@ final class Game {
             throw new Error("could not roll more than three times in a row");
         }
 
-        if (empty($this->dices) && count($which) < 5) {
+        if (empty($this->dice) && count($which) < 5) {
             throw new Error("should roll all dices at the beginning");
         }
 
@@ -22,7 +23,7 @@ final class Game {
         foreach ($which as $diceIndex) {
             $dice = random_int(1,6);
             $rolled[] = $dice;
-            $this->dices[$diceIndex] = $dice;
+            $this->dice[$diceIndex] = $dice;
         }
 
         $this->timesRolled++;
@@ -31,17 +32,59 @@ final class Game {
 
     public function getDices(): array
     {
-        if (empty($this->dices)) {
+        if (empty($this->dice)) {
             throw new Error("not rolled yet");
         }
 
-        return $this->dices;
+        return $this->dice;
     }
 
-    public function submitScore(string $configuration)
+    public function setDice(array $dice): void
     {
-        if (!in_array($configuration, ['ones', 'twos', 'threes', 'fours', 'fives', 'sixes'])) {
+        $dice = array_filter($dice, function($d) {
+            return $d < 7 && $d > 0;
+        });
+
+        if (count($dice) !== 5) {
+            throw new Error("should pass 5 dice");
+        }
+
+        $this->dice = $dice;
+    }
+
+    public function getScore(): int
+    {
+        return $this->score;
+    }
+
+    public function submitScore(string $category)
+    {
+        if (!in_array($category, ['ones', 'twos', 'threes', 'fours', 'fives', 'sixes'])) {
             throw new Error("invalid configuration");
+        }
+
+        switch ($category) {
+            case 'ones':
+                $this->score = array_sum(array_filter($this->dice, function($d) { return $d === 1; }));
+                break;
+            case 'twos':
+                $this->score = array_sum(array_filter($this->dice, function($d) { return $d === 2; }));
+                break;
+            case 'threes':
+                $this->score = array_sum(array_filter($this->dice, function($d) { return $d === 3; }));
+                break;
+            case 'fours':
+                $this->score = array_sum(array_filter($this->dice, function($d) { return $d === 4; }));
+                break;
+            case 'fives':
+                $this->score = array_sum(array_filter($this->dice, function($d) { return $d === 5; }));
+                break;
+            case 'sixes':
+                $this->score = array_sum(array_filter($this->dice, function($d) { return $d === 6; }));
+                break;
+            
+            default:
+                $this->score = 0;
         }
 
         $this->timesRolled = 0;
