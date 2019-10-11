@@ -66,7 +66,7 @@ class GameTest extends TestCase {
         $game->getDices();
     }
 
-    /** @expectedException Error */
+    /** @expectedException Yahtzee\DiceNotInitializedException */
     public function testShouldNotAllowChoosingDicesToRollAtFirstRun()
     {
         // Arrange
@@ -140,5 +140,30 @@ class GameTest extends TestCase {
             ['fives', [1,1,1,1,1], 0],
             ['sixes', [6,6,6,6,6], 30],
         ];
+    }
+
+    /** @expectedException Yahtzee\CategoryUnavailableException */
+    public function testShouldPreventSumbittingTwiceForSingleCategory()
+    {
+        // Arrange
+        $game = new Game();
+        $game->roll();
+        $game->submitScore('ones');
+        $game->roll();
+
+        // Act
+        $game->submitScore('ones');
+    }
+
+    /** @expectedException Yahtzee\DiceNotInitializedException */
+    public function testShouldResetDiceAfterSubmitScore()
+    {
+        // Arrange
+        $game = new Game();
+        $game->roll();
+        $game->submitScore('ones');
+
+        // Act
+        $game->submitScore('ones');
     }
 }

@@ -8,6 +8,7 @@ final class Game {
     private $dice;
     private $timesRolled = 0;
     private $score = 0;
+    private $categories = [];
 
     public function roll(array $which = [0,1,2,3,4]): array
     {
@@ -16,7 +17,7 @@ final class Game {
         }
 
         if (empty($this->dice) && count($which) < 5) {
-            throw new Error("should roll all dices at the beginning");
+            throw new DiceNotInitializedException("should roll all dices at the beginning");
         }
 
         $rolled = [];
@@ -54,7 +55,7 @@ final class Game {
 
     public function getScore(): int
     {
-        return $this->score;
+        return array_sum($this->categories);
     }
 
     public function submitScore(string $category)
@@ -63,30 +64,39 @@ final class Game {
             throw new Error("invalid configuration");
         }
 
+        if (empty($this->dice)) {
+            throw new DiceNotInitializedException();
+        }
+
+        if (isset($this->categories[$category])) {
+            throw new CategoryUnavailableException();
+        }
+
         switch ($category) {
             case 'ones':
-                $this->score = array_sum(array_filter($this->dice, function($d) { return $d === 1; }));
+                $this->categories[$category] = array_sum(array_filter($this->dice, function($d) { return $d === 1; }));
                 break;
             case 'twos':
-                $this->score = array_sum(array_filter($this->dice, function($d) { return $d === 2; }));
+                $this->categories[$category] = array_sum(array_filter($this->dice, function($d) { return $d === 2; }));
                 break;
             case 'threes':
-                $this->score = array_sum(array_filter($this->dice, function($d) { return $d === 3; }));
+                $this->categories[$category] = array_sum(array_filter($this->dice, function($d) { return $d === 3; }));
                 break;
             case 'fours':
-                $this->score = array_sum(array_filter($this->dice, function($d) { return $d === 4; }));
+                $this->categories[$category] = array_sum(array_filter($this->dice, function($d) { return $d === 4; }));
                 break;
             case 'fives':
-                $this->score = array_sum(array_filter($this->dice, function($d) { return $d === 5; }));
+                $this->categories[$category] = array_sum(array_filter($this->dice, function($d) { return $d === 5; }));
                 break;
             case 'sixes':
-                $this->score = array_sum(array_filter($this->dice, function($d) { return $d === 6; }));
+                $this->categories[$category] = array_sum(array_filter($this->dice, function($d) { return $d === 6; }));
                 break;
             
             default:
                 $this->score = 0;
         }
 
+        $this->dice = null;
         $this->timesRolled = 0;
     }
 }
