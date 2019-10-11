@@ -2,9 +2,33 @@
 
 namespace Yahtzee;
 
+use Error;
+
 final class Game {
-    public function roll()
+    private $dices;
+
+    public function roll(array $which = [0,1,2,3,4]): array
     {
-        return [1,2,3,4,5];
+        if (empty($this->dices) && count($which) < 5) {
+            throw new Error("should roll all dices at the beginning");
+        }
+
+        $rolled = [];
+        foreach ($which as $diceIndex) {
+            $dice = random_int(1,6);
+            $rolled[] = $dice;
+            $this->dices[$diceIndex] = $dice;
+        }
+
+        return $rolled;
+    }
+
+    public function getDices(): array
+    {
+        if (empty($this->dices)) {
+            throw new Error("not rolled yet");
+        }
+
+        return $this->dices;
     }
 }
