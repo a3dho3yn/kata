@@ -1,0 +1,12 @@
+{
+    "name": "a3dho3yn/kata-yahtezee",
+    "description": "Yahtzee Kata",
+    "autoload": {
+        "psr-4": {
+            "Yahtzee\\": "src/"
+        }
+    },
+    "require": {
+        "phpunit/phpunit": "^7.5"
+    }
+}
