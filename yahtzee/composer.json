@@ -1,5 +1,5 @@
 {
-    "name": "a3dho3yn/kata-yahtezee",
+    "name": "a3dho3yn/yahtzee-kata",
     "description": "Yahtzee Kata",
     "autoload": {
         "psr-4": {
