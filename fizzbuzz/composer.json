@@ -1,0 +1,12 @@
+{
+    "name": "a3dho3yn/fizzbuzz-kata",
+    "description": "FizzBuzz kata",
+    "autoload": {
+        "psr-4": {
+            "FizzBuzz\\": "src/" 
+        }
+    },
+    "require": {
+        "phpunit/phpunit": "^7.5"
+    }
+}
