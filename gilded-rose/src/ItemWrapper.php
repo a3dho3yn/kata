@@ -18,6 +18,22 @@ class ItemWrapper
      */
     private $item;
 
+    public static function wrap(Item $item) {
+        switch ($item->name) {
+            case 'Aged Brie':
+                return new AgedBrie($item);
+            case 'Backstage passes to a TAFKAL80ETC concert':
+                return new BackstagePass($item);
+            case 'Sulfuras, Hand of Ragnaros':
+                return new Sulfuras($item);
+            case 'Conjured Mana Cake':
+                return new ConjuredItem($item);
+            default:
+                return new self($item);
+        }
+    }
+
+
     public function __construct(Item $item)
     {
         $this->item = $item;
@@ -25,6 +41,9 @@ class ItemWrapper
 
     public function __set($name, $value)
     {
+        if ($name == 'quality') {
+            $value = min(50, max(0, $value)); // clamp between 0-50
+        }
         $this->item->{$name} = $value;
     }
 
@@ -41,57 +60,32 @@ class ItemWrapper
 
     private function age(): void
     {
-        if ($this->name != 'Sulfuras, Hand of Ragnaros') {
-            $this->sell_in -= 1;
-        }
+        $this->sell_in -= 1;
     }
 
-    private function updateQuality(): void
+    protected function updateQuality(): void
     {
-        if ($this->name == 'Aged Brie') {
-            $this->increaseQuality();
-            if ($this->sell_in < 0) {
-                $this->increaseQuality();
-            }
-        } elseif ($this->name == 'Backstage passes to a TAFKAL80ETC concert') {
-            $this->increaseQuality();
-            if ($this->sell_in < 10) {
-                $this->increaseQuality();
-            }
-            if ($this->sell_in < 5) {
-                $this->increaseQuality();
-            }
-            if ($this->sell_in < 0) {
-                $this->quality -= $this->quality;
-            }
-        } elseif ($this->name == 'Sulfuras, Hand of Ragnaros') {
-            // Nope! Legendary items don't change.
-        } elseif ($this->name == 'Conjured Mana Cake') {
-            $this->decreaseQuality();
-            $this->decreaseQuality();
-            if ($this->sell_in < 0) {
-                $this->decreaseQuality();
-                $this->decreaseQuality();
-            }
-        }else {
-            $this->decreaseQuality();
-            if ($this->sell_in < 0) {
-                $this->decreaseQuality();
-            }
+        $change = $this->getFreshItemQualityChange();
+        if ($this->sell_in < 0) {
+            $change = $this->getExpiredItemQualityChange();
         }
+
+        $this->quality += $change;
     }
 
-    private function increaseQuality(): void
+    /**
+     * @return int
+     */
+    protected function getFreshItemQualityChange(): int
     {
-        if ($this->quality < 50) {
-            $this->quality += 1;
-        }
+        return -1;
     }
 
-    private function decreaseQuality(): void
+    /**
+     * @return int
+     */
+    protected function getExpiredItemQualityChange(): int
     {
-        if ($this->quality > 0) {
-            $this->quality -= 1;
-        }
+        return 2 * $this->getFreshItemQualityChange();
     }
 }

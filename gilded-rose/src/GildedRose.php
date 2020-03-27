@@ -12,7 +12,7 @@ final class GildedRose {
 
     public function updateQuality() {
         foreach ($this->items as $item) {
-            (new ItemWrapper($item))->update();
+            ItemWrapper::wrap($item)->update();
         }
     }
 }
